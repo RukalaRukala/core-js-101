@@ -400,8 +400,16 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  let arr = Array(m1.length).fill(Array(m2[0].length).fill(null));
+  arr = arr.map((elem, i) => elem.map((item, j) => {
+    const multiple = m1[i].reduce((acc, cur, index) => {
+      const sumMultiple = acc + cur * m2[index][j];
+      return sumMultiple;
+    }, 0);
+    return multiple;
+  }));
+  return arr;
 }
 
 /**
@@ -434,8 +442,27 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+// const O = '0';
+// const X = 'X';
+
+function evaluateTicTacToePosition(position) {
+  let variants = position;
+  const columns = position.reduce((acc, cur, i) => {
+    acc[0].push(cur[0] ? cur[0] : null);
+    acc[1].push(cur[1] ? cur[1] : null);
+    acc[2].push(cur[2] ? cur[2] : null);
+    acc[3].push(cur[i] ? cur[i] : null);
+    acc[4].push(cur[Math.abs(i - 2)] ? cur[Math.abs(i - 2)] : null);
+    return acc;
+  }, [[], [], [], [], []]);
+
+  variants = variants
+    .concat(columns)
+    .map((item) => [new Set(item).size, item.length, item[0]])
+    .filter((item) => item[0] === 1 && item[1] === 3 && (item[2]));
+
+  if (variants.length === 0) { return undefined; }
+  return variants[0][2];
 }
 
 module.exports = {
