@@ -279,8 +279,26 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const strCcn = String(ccn).split('').map((str) => Number(str));
+  const sum = strCcn.reduce((acc, cur, i) => {
+    function checkCur(crnt, rem) {
+      if (i % 2 === rem) {
+        let current = crnt * 2;
+        const strCur = String(current);
+        if (strCur.length > 1) {
+          current = Number(strCur[0]) + Number(strCur[1]);
+        }
+        return current;
+      }
+      return crnt;
+    }
+
+    return strCcn.length % 2 === 0
+      ? acc + checkCur(cur, 0)
+      : acc + checkCur(cur, 1);
+  }, 0);
+  return sum % 10 === 0;
 }
 
 /**
@@ -378,8 +396,28 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const slashPosition = 0;
+  function findByEachDir(path, pos) {
+    const p = pos;
+    const pathesArray = path.reduce((acc, cur) => {
+      if (cur.includes('/', p)) {
+        acc.push(cur.slice(0, cur.indexOf('/', p) + 1));
+      } else {
+        acc.push(cur);
+      }
+      return acc;
+    }, []);
+    if (new Set(pathesArray).size === 1) {
+      return findByEachDir(path, p + 1);
+    }
+    if (p === 0) {
+      return '';
+    }
+    return pathesArray[0].slice(0, pathesArray[0].indexOf('/', pos - 1) + 1);
+  }
+
+  return findByEachDir(pathes, slashPosition);
 }
 
 /**
